@@ -15,11 +15,26 @@ motor_group DriveMotorGroupLeft = motor_group(DriveMotorBackLeft, DriveMotorFron
 motor_group DriveMotorGroupRight = motor_group(DriveMotorBackRight, DriveMotorFrontRight);
 
 void drive() {
-  float ControllerHorizontalAxis =  controller.Axis4.position()^3/10000;
-  float ControllerVerticleAxis = controller.Axis2.position()^3/10000;
+  float ControllerHorizontalAxis = pow(controller.Axis4.position(), 3) / 10000.0;
+  float ControllerVerticalAxis = pow(controller.Axis4.position(), 3) / 10000;
 
-  DriveMotorGroupLeft.spin(forward, ControllerVerticleAxis + ControllerHorizontalAxis, pct);
-  DriveMotorGroupRight.spin(forward, ControllerVerticleAxis - ControllerHorizontalAxis, pct);
+  DriveMotorGroupLeft.spin(forward, ControllerVerticalAxis + ControllerHorizontalAxis, pct);
+  DriveMotorGroupRight.spin(forward, ControllerVerticalAxis - ControllerHorizontalAxis, pct);
+}
+
+void gtaDrive() {
+  float ControllerHorizontalAxis = pow(controller.Axis4.position(), 3) / 10000.0;
+  if (controller.ButtonR1.pressing()) {
+    float ControllerVerticalAxis = 100;
+  }
+  else if (controller.ButtonR2.pressing()) {
+    float ControllerVerticalAxis = -100;
+  }
+  else {
+    float ControllerVerticalAxis = 0;
+  }
+  DriveMotorGroupLeft.spin(forward, ControllerVerticalAxis + ControllerHorizontalAxis, pct);
+  DriveMotorGroupRight.spin(forward, ControllerVerticalAxis - ControllerHorizontalAxis, pct);
 }
 
 void pre_auton() {
@@ -32,7 +47,9 @@ void autonomous() {
 
 void usercontrol() {
   while (1) {
-    // user controls
+    drive()
+    // gtaDrive()
+    // ^ you could kill me before making me uncomment that line
     wait(20, msec);               
   }
 }
