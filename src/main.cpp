@@ -4,17 +4,33 @@ using namespace vex;
 
 competition Competition;
 
+controller Controller = controller();
 
+motor DriveMotorBackLeft = motor(PORT1, true);
+motor DriveMotorBackRight = motor(PORT2, true);
+motor DriveMotorFrontLeft = motor(PORT3, true);
+motor DriveMotorFrontRight = motor(PORT4, true);
 
-void pre_auton(void) {
+motor_group DriveMotorGroupLeft = motor_group(DriveMotorBackLeft, DriveMotorFrontLeft);
+motor_group DriveMotorGroupRight = motor_group(DriveMotorBackRight, DriveMotorFrontRight);
+
+void drive() {
+  float ControllerHorizontalAxis =  controller.Axis4.position()^3/10000;
+  float ControllerVerticleAxis = controller.Axis2.position()^3/10000;
+
+  DriveMotorGroupLeft.spin(forward, ControllerVerticleAxis + ControllerHorizontalAxis, pct);
+  DriveMotorGroupRight.spin(forward, ControllerVerticleAxis - ControllerHorizontalAxis, pct);
+}
+
+void pre_auton() {
   // pre auton
 }
 
-void autonomous(void) {
+void autonomous() {
   // auton
 }
 
-void usercontrol(void) {
+void usercontrol() {
   while (1) {
     // user controls
     wait(20, msec);               
